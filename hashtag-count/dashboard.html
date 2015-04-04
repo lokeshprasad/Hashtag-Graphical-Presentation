@@ -1,0 +1,72 @@
+<html>
+<head>
+    <title>Hashtag Count</title>
+</head>
+<body>
+<div id="graph_container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+<script src="/socket.io/socket.io.js"></script>
+
+<script src="http://code.jquery.com/jquery-1.9.0.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script>
+    $(function() {
+        Highcharts.setOptions({
+            global: {
+                useUTC: false
+            }
+        });
+
+        var graph = new Highcharts.Chart({
+            title: { text: 'Real Time Hashtag Counts' },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 100
+            },
+            yAxis: {
+                title: { text: 'Hashtag Count' },
+                tickInterval: 10,
+                min: 0
+            },
+            tooltip: {
+                formatter: function() {
+                    return '<b>'+ this.series.name + '</b><br/>'
+                            + '[ ' + Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x)
+                            + ' , '
+                            + this.y + ' ]';
+                }
+            },
+            chart: {
+                type: 'spline',
+                renderTo: 'graph_container',
+                events: {
+                    load: function() {
+                        var series = this.series[0];
+                        var socket = io.connect('http://localhost:3000');
+                        socket.on('sample', function (sample) {
+                            series.addPoint([sample.x, sample.y], true, true);
+                        });
+                    }
+                }
+            },
+            series: [{
+                name: 'Time',
+                data: (function() {
+                    // generate some points to render before real samples arrive from tweets
+                    var data = [],
+                            time = (new Date()).getTime(),
+                            i;
+                    for (i = -19; i <= 0; i++) {
+                        data.push({
+                            x: time + (i * 1000),
+                            y: 0
+                        });
+                    }
+                    return data;
+                })()
+            }]
+        });
+
+    });
+</script>
+</body>
+</html>

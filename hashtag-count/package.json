@@ -1,0 +1,11 @@
+{
+  "name": "hashtag count",
+  "description": "monitor hashtag and show latest items in realtime.",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "ntwitter"  : "*",
+    "socket.io" : "*",
+    "express"   : "*"
+  }
+}
