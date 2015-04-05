@@ -1,5 +1,5 @@
 var twitter = require('ntwitter'),
-    credentials = require('./credentials.js'),
+    credentials = require('./credential.js'),
     express = require('express'),
     app = express(),
     server = require('http').createServer(app),
